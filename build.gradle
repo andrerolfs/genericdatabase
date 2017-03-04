@@ -1,0 +1,52 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+repositories {
+  mavenLocal()
+  jcenter()
+  //mavenCentral()
+}
+
+task fatJar(type: Jar) {
+  manifest {
+    //attributes 'Main-Class': 'com.test.jpa.JPAExample'
+    attributes 'Main-Class': 'com.wartbar.genericdb.main.GenericDBMain'
+  }
+  sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
+  baseName = project.name + '-all'
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  with jar
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+compileJava.dependsOn(processResources)
+fatJar.dependsOn(processResources)
+
+// to make persistence.xml work for gradle
+/*
+sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
+jar {
+  duplicatesStrategy = 'exclude'
+}
+*/
+
+dependencies {
+  compile ('org.codehaus.groovy:groovy-all:2.4.6',
+          'com.h2database:h2:1.4.193',
+          'org.eclipse.persistence:eclipselink:2.6.4',
+          'org.eclipse.persistence:org.eclipse.persistence.jpars:2.6.4',
+          'org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.6.4',
+          //'javax.persistence:persistence-api:1.0.2',
+          'org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.4',
+  )
+
+  testCompile(
+          'junit:junit:4.12',
+          'org.codehaus.groovy:groovy-all:2.4.6',
+          'org.spockframework:spock-core:1.0-groovy-2.4',
+  )
+
+  testRuntime(
+          'com.athaydes:spock-reports:1.2.7'
+  )
+}
