@@ -19,16 +19,18 @@ public class IO {
 
 	static Logger logger = Logger.getLogger(IO.class.getName());
 
-	private static void logInfo(String message) {
-		logger.log(Level.INFO,message);
+	private static void logError(String message) {
+		logger.log(Level.SEVERE,message);
 	}
 
-	public static void add(Entry entry) {
+	public static long add(Entry entry) {
+		DBEntry e = null;
+
 		try {
 
 			DB.beginTransaction();
 
-			DBEntry e = entry.getDBEntry();
+			e = entry.getDBEntry();
 
 			DB.persist(e);
 
@@ -41,11 +43,13 @@ public class IO {
 			}
 
 			DB.commitTransaction();
-		} catch (Exception e) {
-			System.out.println("An exception occured in IO.add");
-			System.out.println(e.getMessage());
+		} catch (Exception exception) {
+			logError("An exception occured in IO.add");
+			logError(exception.getMessage());
 			DB.rollbackTransaction();
 		}
+
+		return e.getEntryId();
 	}
 
 	public static List<DBEntry> getAllEntries() {
@@ -56,8 +60,8 @@ public class IO {
 			entries = query.getResultList();
 			DB.commitTransaction();
 		} catch (Exception e) {
-			System.out.println("An exception occured in IO.getAllEntries");
-			System.out.println(e.getMessage());
+			logError("An exception occured in IO.getAllEntries");
+			logError(e.getMessage());
 			DB.rollbackTransaction();
 		}
 		return entries;
@@ -70,7 +74,7 @@ public class IO {
 		try {
 			entry = queryData.getSingleResult();
 		} catch (Exception e) {
-			System.out.println("IO.getEntry : " + e.getMessage());
+			logError("IO.getEntry : " + e.getMessage());
 		}
 		return entry;
 	}
@@ -82,20 +86,9 @@ public class IO {
 		try {
 			entries = queryData.getResultList();
 		} catch (Exception e) {
-			System.out.println("IO.getEntriesOfToday : " + e.getMessage());
+			logError("IO.getEntriesOfToday : " + e.getMessage());
 		}
 		return entries;
 	}
-
-
-
-/*
-
-		TypedQuery<DBData> queryData = DB.getEntityManager().createQuery("SELECT e.dataList from DBEntry e where e.entryId = :entryId", DBData.class);
-		queryData.setParameter("entryId", (long)51);
-		List<DBData> dataResultList = queryData.getResultList();
-
- */
-
 
 }
