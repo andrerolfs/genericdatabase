@@ -10,7 +10,6 @@ repositories {
 task fatJar(type: Jar, group: "AMOS") {
   description = "build fat jar of this project"
   manifest {
-    //attributes 'Main-Class': 'com.test.jpa.JPAExample'
     attributes 'Main-Class': 'com.wartbar.genericdb.main.GenericDBMain'
   }
   sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
