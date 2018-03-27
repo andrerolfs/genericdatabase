@@ -10,16 +10,13 @@ class IOTest extends spock.lang.Specification {
 
   public static Entry createTestEntry() {
     Entry entry = Entry.createNew();
-    entry.addData(1,1,1);
-    entry.addData(1,1,2);
-    entry.addData(1,1,3);
-    entry.addData(1,2,1);
-    entry.addData(2,2,1);
-    entry.addData(3,1,3);
-    entry.addString(1,1,"Hello");
-    entry.addString(1,2,"World");
-    entry.addString(2,1,"Hi");
-    entry.addString(2,2,"User");
+    entry.addData(1,2,3);
+    entry.addData(4,5,6);
+    entry.addData(7,8,9);
+    entry.addString(1,2,"Hello");
+    entry.addString(3,4,"World");
+    entry.addString(5,6,"Hi");
+    entry.addString(7,8,"User");
     return entry;
   }
 
@@ -31,6 +28,15 @@ class IOTest extends spock.lang.Specification {
 
     expect:
     id == e.getEntryId()
+    1 == e.getDataList()[0].getDataType()
+    5 == e.getDataList()[1].getKey()
+    9 == e.getDataList()[2].getValue()
+    "Hello" == e.getStringList()[0].getValue()
+    "World" == e.getStringList()[1].getValue()
+    "Hi" == e.getStringList()[2].getValue()
+    "User" == e.getStringList()[3].getValue()
+    5 == e.getStringList()[2].getDataType()
+    6 == e.getStringList()[2].getKey()
   }
 
 }

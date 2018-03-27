@@ -8,6 +8,7 @@ import com.wartbar.genericdb.model.DBData;
 import com.wartbar.genericdb.model.DBEntry;
 import com.wartbar.genericdb.model.DBString;
 import com.wartbar.genericdb.util.DB;
+import com.wartbar.genericdb.util.QueryDBEntryStrategy;
 import com.wartbar.genericdb.util.Time;
 
 import javax.persistence.TypedQuery;
@@ -52,19 +53,47 @@ public class IO {
 		return e.getEntryId();
 	}
 
-	public static List<DBEntry> getAllEntries() {
+	public static List<DBEntry> getEntries(String queryString, QueryDBEntryStrategy strategy) {
 		List<DBEntry> entries = null;
 		try {
 			DB.beginTransaction();
-			TypedQuery<DBEntry> query = DB.getEntityManager().createQuery("SELECT e from DBEntry e", DBEntry.class);
+			TypedQuery<DBEntry> query = DB.getEntityManager().createQuery(queryString, DBEntry.class);
+			strategy.execute(query);
 			entries = query.getResultList();
 			DB.commitTransaction();
 		} catch (Exception e) {
-			logError("An exception occured in IO.getAllEntries");
+			logError("An exception occured in IO.getEntries with \n" +
+							"query      : " + queryString + "\n" +
+							"strategies : " + strategy.getDescription());
 			logError(e.getMessage());
 			DB.rollbackTransaction();
 		}
 		return entries;
+	}
+
+	public static List<DBEntry> getAllEntriesAscending() {
+		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId ASC",
+						QueryDBEntryStrategy.createAllResults());
+	}
+
+	public static List<DBEntry> getAllEntriesDescending() {
+		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId DESC",
+						QueryDBEntryStrategy.createAllResults());
+	}
+
+	public static List<DBEntry> getLastEntries(int maxResults) {
+		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId DESC",
+						QueryDBEntryStrategy.createMaxResults(maxResults));
+	}
+
+	public static List<DBEntry> getFirstEntries(int maxResults) {
+		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId ASC",
+						QueryDBEntryStrategy.createMaxResults(maxResults));
+	}
+
+	public static List<DBEntry> getEntriesOfToday() {
+		return getEntries("SELECT e from DBEntry e where e.timestamp > :definedDay",
+						QueryDBEntryStrategy.createNewerThanCalendarParameter(Time.getYesterday()));
 	}
 
 	public static DBEntry getEntry(long id) {
@@ -79,16 +108,5 @@ public class IO {
 		return entry;
 	}
 
-	public static List<DBEntry> getEntriesOfToday() {
-		TypedQuery<DBEntry> queryData = DB.getEntityManager().createQuery("SELECT e from DBEntry e where e.timestamp > :yesterday", DBEntry.class);
-		queryData.setParameter("yesterday", Time.getYesterday());
-		List<DBEntry> entries = null;
-		try {
-			entries = queryData.getResultList();
-		} catch (Exception e) {
-			logError("IO.getEntriesOfToday : " + e.getMessage());
-		}
-		return entries;
-	}
 
 }

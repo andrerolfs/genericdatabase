@@ -71,7 +71,7 @@ task showDatabase(group: 'AMOS') {
   description = "show the generic database in a GUI created with SwingBuilder"
   doLast {
 
-    List<DBEntry> entries = IO.getAllEntries();
+    List<DBEntry> entries = IO.getLastEntries(10)
 
 
     List<Map<String,String>> dbEntryList = new ArrayList<>()

@@ -43,7 +43,7 @@ public class GenericDBMain {
 		IO.add(createTestEntry());
 		IO.add(createTestEntry());
 
-		List<DBEntry> entries = IO.getAllEntries();
+		List<DBEntry> entries = IO.getAllEntriesAscending();
 
 		Long firstEntryID = entries.get(0).getEntryId();
 		DBEntry entry = IO.getEntry(firstEntryID);
