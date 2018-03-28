@@ -64,6 +64,11 @@ task backupGradleHomeJars(group:"AMOS") {
 import groovy.swing.SwingBuilder
 import javax.swing.WindowConstants
 
+/*
+
+// only works when the fatJar is already built but causes errors if not, e.g. after clean
+// build.gradle must be split, then this works
+
 import com.wartbar.genericdb.model.DBEntry
 import com.wartbar.genericdb.access.IO
 
@@ -118,3 +123,4 @@ task showDatabase(group: 'AMOS') {
     frame.show()
   }
 }
+*/

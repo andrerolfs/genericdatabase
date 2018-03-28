@@ -20,10 +20,10 @@ class IOTest extends spock.lang.Specification {
     return entry;
   }
 
-  def "test IO.add"() {
-    setup:
+  def "test IO.add()"() {
 
-    long id = IO.add(createTestEntry());
+    setup:
+    long id = IO.add(createTestEntry())
     DBEntry e = IO.getEntry(id)
 
     expect:
@@ -39,4 +39,27 @@ class IOTest extends spock.lang.Specification {
     6 == e.getStringList()[2].getKey()
   }
 
+  def "test IO.getAllEntriesAscending() and getAllEntriesDecending()"() {
+
+    setup:
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    List<DBEntry> ascendingList = IO.getAllEntriesAscending()
+    List<DBEntry> descendingList = IO.getAllEntriesDescending()
+
+    boolean ascEqualsInvertedDesc = true
+    for (int i = 0; i < ascendingList.size(); i++) {
+      if (ascendingList.get(i).getEntryId() !=
+              descendingList.get(descendingList.size()-1-i).getEntryId()) {
+        ascEqualsInvertedDesc = false
+      }
+    }
+
+    expect:
+    ascendingList.size() >= 3
+    ascendingList.size() == descendingList.size()
+    ascendingList.get(0).getEntryId() == descendingList.get(descendingList.size()-1).getEntryId()
+    ascEqualsInvertedDesc
+  }
 }
