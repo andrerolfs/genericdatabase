@@ -1,6 +1,7 @@
 package com.wartbar.genericdb.access
 
 import com.wartbar.genericdb.model.DBEntry
+import com.wartbar.genericdb.util.Time
 
 
 /**
@@ -8,7 +9,7 @@ import com.wartbar.genericdb.model.DBEntry
  */
 class IOTest extends spock.lang.Specification {
 
-  public static Entry createTestEntry() {
+  static Entry createTestEntry() {
     Entry entry = Entry.createNew();
     entry.addData(1, 2, 3);
     entry.addData(4, 5, 6);
@@ -95,6 +96,42 @@ class IOTest extends spock.lang.Specification {
     lastDescendingList.size() == 3
     firstAscEqualsBeginOfCompleteList
     lastDescEqualsEndOfCompleteList
+  }
+
+  def "test IO.getEntriesOfToday()"() {
+
+    setup:
+    Calendar yesterday = Time.getYesterday()
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    List<DBEntry> completeList = IO.getAllEntriesAscending()
+    List<DBEntry> todayAscendingList = IO.getEntriesOfTodayAscending()
+
+    HashSet<Long> todayAscIDs = new HashSet<>()
+    boolean todayAscIsOk = true
+    todayAscendingList.each {
+      if (it.getTimestamp() <= yesterday) {
+        todayAscIsOk = false
+      } else {
+        todayAscIDs.add(it.getEntryId())
+      }
+    }
+
+    boolean olderThanTodayIOk = true
+    completeList.each {
+      if (todayAscIDs.contains(it.getEntryId())) {
+        return
+      } else {
+        if (it.getTimestamp() > yesterday) {
+          olderThanTodayIOk = false
+        }
+      }
+
+      expect:
+      todayAscIsOk
+      olderThanTodayIOk
+    }
   }
 
 }

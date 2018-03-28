@@ -91,8 +91,8 @@ public class IO {
 						QueryDBEntryStrategy.createMaxResults(maxResults));
 	}
 
-	public static List<DBEntry> getEntriesOfToday() {
-		return getEntries("SELECT e from DBEntry e where e.timestamp > :definedDay",
+	public static List<DBEntry> getEntriesOfTodayAscending() {
+		return getEntries("SELECT e from DBEntry e where e.timestamp > :definedDay ORDER BY e.entryId ASC",
 						QueryDBEntryStrategy.createNewerThanCalendarParameter(Time.getYesterday()));
 	}
 

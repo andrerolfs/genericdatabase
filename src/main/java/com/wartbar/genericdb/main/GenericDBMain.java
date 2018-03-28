@@ -51,7 +51,7 @@ public class GenericDBMain {
 		Entry.createFromExisting(entry).print();
 		System.out.println("<--- end of first entry in DB");
 
-		entries = IO.getEntriesOfToday();
+		entries = IO.getEntriesOfTodayAscending();
 
 		System.out.println("####---> today");
 		for (DBEntry e2 : entries) {
