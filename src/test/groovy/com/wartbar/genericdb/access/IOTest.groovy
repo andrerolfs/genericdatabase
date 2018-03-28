@@ -10,13 +10,13 @@ class IOTest extends spock.lang.Specification {
 
   public static Entry createTestEntry() {
     Entry entry = Entry.createNew();
-    entry.addData(1,2,3);
-    entry.addData(4,5,6);
-    entry.addData(7,8,9);
-    entry.addString(1,2,"Hello");
-    entry.addString(3,4,"World");
-    entry.addString(5,6,"Hi");
-    entry.addString(7,8,"User");
+    entry.addData(1, 2, 3);
+    entry.addData(4, 5, 6);
+    entry.addData(7, 8, 9);
+    entry.addString(1, 2, "Hello");
+    entry.addString(3, 4, "World");
+    entry.addString(5, 6, "Hi");
+    entry.addString(7, 8, "User");
     return entry;
   }
 
@@ -51,7 +51,7 @@ class IOTest extends spock.lang.Specification {
     boolean ascEqualsInvertedDesc = true
     for (int i = 0; i < ascendingList.size(); i++) {
       if (ascendingList.get(i).getEntryId() !=
-              descendingList.get(descendingList.size()-1-i).getEntryId()) {
+              descendingList.get(descendingList.size() - 1 - i).getEntryId()) {
         ascEqualsInvertedDesc = false
       }
     }
@@ -59,7 +59,42 @@ class IOTest extends spock.lang.Specification {
     expect:
     ascendingList.size() >= 3
     ascendingList.size() == descendingList.size()
-    ascendingList.get(0).getEntryId() == descendingList.get(descendingList.size()-1).getEntryId()
+    ascendingList.get(0).getEntryId() == descendingList.get(descendingList.size() - 1).getEntryId()
     ascEqualsInvertedDesc
   }
+
+  def "test IO.getLastEntriesDescending() and getFirstEntriesAscending()"() {
+
+    setup:
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    IO.add(createTestEntry()) // to be sure the DB is not empty
+    List<DBEntry> completeList = IO.getAllEntriesAscending()
+    List<DBEntry> lastDescendingList = IO.getLastEntriesDescending(3)
+    List<DBEntry> firstAscendingList = IO.getFirstEntriesAscending(3)
+
+
+    boolean firstAscEqualsBeginOfCompleteList = true
+    for (int i = 0; i < firstAscendingList.size(); i++) {
+      if (firstAscendingList.get(i).getEntryId() !=
+              completeList.get(i).getEntryId()) {
+        firstAscEqualsBeginOfCompleteList = false
+      }
+    }
+
+    boolean lastDescEqualsEndOfCompleteList = true
+    for (int i = 0; i < lastDescendingList.size(); i++) {
+      if (lastDescendingList.get(i).getEntryId() !=
+              completeList.get(completeList.size()-1-i).getEntryId()) {
+        lastDescEqualsEndOfCompleteList = false
+      }
+    }
+
+    expect:
+    firstAscendingList.size() == 3
+    lastDescendingList.size() == 3
+    firstAscEqualsBeginOfCompleteList
+    lastDescEqualsEndOfCompleteList
+  }
+
 }

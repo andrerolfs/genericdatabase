@@ -81,12 +81,12 @@ public class IO {
 						QueryDBEntryStrategy.createAllResults());
 	}
 
-	public static List<DBEntry> getLastEntries(int maxResults) {
+	public static List<DBEntry> getLastEntriesDescending(int maxResults) {
 		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId DESC",
 						QueryDBEntryStrategy.createMaxResults(maxResults));
 	}
 
-	public static List<DBEntry> getFirstEntries(int maxResults) {
+	public static List<DBEntry> getFirstEntriesAscending(int maxResults) {
 		return getEntries("SELECT e from DBEntry e ORDER BY e.entryId ASC",
 						QueryDBEntryStrategy.createMaxResults(maxResults));
 	}
