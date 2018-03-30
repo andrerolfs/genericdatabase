@@ -2,7 +2,6 @@ package com.wartbar.genericdb.model;
 
 import javax.persistence.*;
 import java.util.List;
-
 /**
  * Created by amos on 22.01.17.
  */
