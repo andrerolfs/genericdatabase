@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.wartbar.genericdb.item.EntryItem;
 import com.wartbar.genericdb.model.DBData;
 import com.wartbar.genericdb.model.DBEntry;
 import com.wartbar.genericdb.model.DBString;
@@ -24,14 +25,14 @@ public class IO {
 		logger.log(Level.SEVERE,message);
 	}
 
-	public static long add(Entry entry) {
+	public static long add(EntryItem entryItem) {
 		DBEntry e = null;
 
 		try {
 
 			DB.beginTransaction();
 
-			e = entry.getDBEntry();
+			e = EntryExchange.getDBEntry(entryItem);
 
 			DB.persist(e);
 

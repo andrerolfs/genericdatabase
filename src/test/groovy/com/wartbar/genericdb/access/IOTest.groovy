@@ -1,5 +1,6 @@
 package com.wartbar.genericdb.access
 
+import com.wartbar.genericdb.item.EntryItem
 import com.wartbar.genericdb.model.DBEntry
 import com.wartbar.genericdb.util.Time
 
@@ -9,15 +10,15 @@ import com.wartbar.genericdb.util.Time
  */
 class IOTest extends spock.lang.Specification {
 
-  static Entry createTestEntry() {
-    Entry entry = Entry.createNew();
-    entry.addData(1, 2, 3);
-    entry.addData(4, 5, 6);
-    entry.addData(7, 8, 9);
-    entry.addString(1, 2, "Hello");
-    entry.addString(3, 4, "World");
-    entry.addString(5, 6, "Hi");
-    entry.addString(7, 8, "User");
+  static EntryItem createTestEntry() {
+    EntryItem entry = EntryExchange.createNew();
+    EntryExchange.addData(1, 2, 3, entry);
+    EntryExchange.addData(4, 5, 6, entry);
+    EntryExchange.addData(7, 8, 9, entry);
+    EntryExchange.addString(1, 2, "Hello", entry);
+    EntryExchange.addString(3, 4, "World", entry);
+    EntryExchange.addString(5, 6, "Hi", entry);
+    EntryExchange.addString(7, 8, "User", entry);
     return entry;
   }
 
